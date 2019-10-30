@@ -4,6 +4,7 @@ import pyaudio
 import socket
 import threading
 
+
 class MixedSoundStreamClient(threading.Thread):
     def __init__(self, server_host, server_port, wav_filename):
         threading.Thread.__init__(self)
@@ -25,10 +26,10 @@ class MixedSoundStreamClient(threading.Thread):
 
         # マイクの入力ストリーム生成
         mic_stream = audio.open(format=FORMAT,
-                            channels=CHANNELS,
-                            rate=RATE,
-                            input=True,
-                            frames_per_buffer=CHUNK)
+                                channels=CHANNELS,
+                                rate=RATE,
+                                input=True,
+                                frames_per_buffer=CHUNK)
 
         # サーバに接続
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
@@ -70,6 +71,7 @@ class MixedSoundStreamClient(threading.Thread):
         decoded_data2.resize(channels * frames_per_buffer, refcheck=False)
         # 音量調整 & エンコード
         return (decoded_data1 * volume1 + decoded_data2 * volume2).astype(np.int16).tobytes()
+
 
 if __name__ == '__main__':
     mss_client = MixedSoundStreamClient("localhost", 12345, "sample.wav")
