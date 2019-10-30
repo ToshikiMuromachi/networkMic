@@ -1,3 +1,4 @@
+# coding: utf-8
 import numpy as np
 import wave
 import pyaudio
@@ -36,7 +37,7 @@ class MixedSoundStreamClient(threading.Thread):
             sock.connect((self.SERVER_HOST, self.SERVER_PORT))
 
             # サーバにオーディオプロパティを送信
-            sock.send("{},{},{},{}".format(FORMAT, CHANNELS, RATE, CHUNK).encode('utf-8'))
+            sock.send("{},{},{},{}".format(FORMAT, CHANNELS, RATE, CHUNK).encode('utf-8',errors='ignore'))
 
             # メインループ
             while True:
@@ -50,6 +51,7 @@ class MixedSoundStreamClient(threading.Thread):
                     wav_data = wav_file.readframes(CHUNK)
 
                 # サーバに音データを送信
+                print(self.mix_sound(wav_data, mic_data, CHANNELS, CHUNK, 0.5, 0.5))
                 sock.send(self.mix_sound(wav_data, mic_data, CHANNELS, CHUNK, 0.5, 0.5))
 
         # 終了処理
