@@ -1,3 +1,4 @@
+# coding: utf-8
 import pyaudio
 import socket
 import threading
@@ -17,11 +18,13 @@ class MixedSoundStreamServer(threading.Thread):
             server_sock.bind((self.SERVER_HOST, self.SERVER_PORT))
             server_sock.listen(1)
 
+            print("接続待機中")
             # クライアントと接続
             client_sock, _ = server_sock.accept()
             with client_sock:
                 # クライアントからオーディオプロパティを受信
                 settings_list = client_sock.recv(256).decode('utf-8').split(",")
+                # settings_list = client_sock.recv(256)
                 FORMAT = int(settings_list[0])
                 CHANNELS = int(settings_list[1])
                 RATE = int(settings_list[2])
@@ -33,6 +36,10 @@ class MixedSoundStreamServer(threading.Thread):
                 # メインループ
                 while True:
                     # クライアントから音データを受信
+                    print("=====CHUNK:" + str(FORMAT) + "=====")
+                    print("=====CHANNELS:" + str(CHANNELS) + "=====")
+                    print("=====RATE:" + str(RATE) + "=====")
+                    print("=====CHUNK:" + str(CHUNK) + "=====")
                     data = client_sock.recv(CHUNK)
 
                     # 切断処理
