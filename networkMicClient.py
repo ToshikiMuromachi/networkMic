@@ -41,19 +41,10 @@ class MixedSoundStreamClient(threading.Thread):
 
             # メインループ
             while True:
-                # 音楽ファイルとマイクからデータ読み込み
-                # wav_data = wav_file.readframes(CHUNK)
+                # マイクからデータ読み込み
                 mic_data = mic_stream.read(CHUNK)
 
-                # 音楽ファイルリピート再生処理
-                #if wav_data == b'':
-                #    wav_file.rewind()
-                #    wav_data = wav_file.readframes(CHUNK)
-
-                # サーバに音データを送信
-                # print(self.mix_sound(wav_data, mic_data, CHANNELS, CHUNK, 0.5, 0.5))
                 print(mic_data)
-                #sock.send(self.mix_sound(wav_data, mic_data, CHANNELS, CHUNK, 0.5, 0.5))
 
                 # デコード
                 decoded_data = np.frombuffer(mic_data, np.int16).copy()
@@ -67,20 +58,6 @@ class MixedSoundStreamClient(threading.Thread):
         mic_stream.close()
 
         audio.terminate()
-
-    # 2つの音データを1つの音データにミックス
-    def mix_sound(self, data1, data2, channels, frames_per_buffer, volume1, volume2):
-        # 音量チェック
-        if volume1 + volume2 > 1.0:
-            return None
-        # デコード
-        decoded_data1 = np.frombuffer(data1, np.int16).copy()
-        decoded_data2 = np.frombuffer(data2, np.int16).copy()
-        # データサイズの不足分を0埋め
-        decoded_data1.resize(channels * frames_per_buffer, refcheck=False)
-        decoded_data2.resize(channels * frames_per_buffer, refcheck=False)
-        # 音量調整 & エンコード
-        return (decoded_data1 * volume1 + decoded_data2 * volume2).astype(np.int16).tobytes()
 
 
 if __name__ == '__main__':
