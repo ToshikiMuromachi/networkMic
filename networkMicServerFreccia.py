@@ -3,6 +3,12 @@ import pyaudio
 import socket
 import threading
 
+import numpy as np
+import sys
+
+import pyqtgraph as pg
+from pyqtgraph.Qt import QtCore, QtGui
+
 
 class MixedSoundStreamServer(threading.Thread):
     def __init__(self, server_host, server_port):
@@ -11,7 +17,7 @@ class MixedSoundStreamServer(threading.Thread):
         self.SERVER_PORT = int(server_port)
 
     def run(self):
-        # audio = pyaudio.PyAudio()
+        audio = pyaudio.PyAudio()
 
         # サーバーソケット生成
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_sock:
@@ -24,7 +30,6 @@ class MixedSoundStreamServer(threading.Thread):
             with client_sock:
                 # クライアントからオーディオプロパティを受信
                 settings_list = client_sock.recv(256).decode('utf-8').split(",")
-                # settings_list = client_sock.recv(256)
                 FORMAT = int(settings_list[0])
                 CHANNELS = int(settings_list[1])
                 RATE = int(settings_list[2])
@@ -36,11 +41,16 @@ class MixedSoundStreamServer(threading.Thread):
                 # メインループ
                 while True:
                     # クライアントから音データを受信
-                    print("=====CHUNK:" + str(FORMAT) + "=====")
-                    print("=====CHANNELS:" + str(CHANNELS) + "=====")
-                    print("=====RATE:" + str(RATE) + "=====")
-                    print("=====CHUNK:" + str(CHUNK) + "=====")
+                    print("=====FORMAT:" + str(FORMAT) + "=====") # 8
+                    print("=====CHANNELS:" + str(CHANNELS) + "=====") # 2　スレテオ
+                    print("=====RATE:" + str(RATE) + "=====") # 44100=44.1kHz
+                    print("=====CHUNK:" + str(CHUNK) + "=====") #1024 ファイル全体サイズからRIFFとWAVEのバイト数を引いた数
                     data = client_sock.recv(CHUNK)
+
+                    ret = data
+                    ret = np.frombuffer(ret, dtype="int16") / 32768
+                    print(ret)
+                    self.curve.setData(ret)
 
                     # 切断処理
                     if not data:
@@ -54,7 +64,7 @@ class MixedSoundStreamServer(threading.Thread):
         # stream.stop_stream()
         # stream.close()
 
-        # audio.terminate()
+        audio.terminate()
 
 
 if __name__ == '__main__':
