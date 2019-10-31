@@ -17,12 +17,12 @@ class MixedSoundStreamClient(threading.Thread):
         audio = pyaudio.PyAudio()
 
         # 音楽ファイル読み込み
-        wav_file = wave.open(self.WAV_FILENAME, 'rb')
+        # wav_file = wave.open(self.WAV_FILENAME, 'rb')
 
         # オーディオプロパティ
         FORMAT = pyaudio.paInt16
-        CHANNELS = wav_file.getnchannels()
-        RATE = wav_file.getframerate()
+        CHANNELS = 2
+        RATE = 44100
         CHUNK = 1024
 
         # マイクの入力ストリーム生成
@@ -37,22 +37,30 @@ class MixedSoundStreamClient(threading.Thread):
             sock.connect((self.SERVER_HOST, self.SERVER_PORT))
 
             # サーバにオーディオプロパティを送信
-            sock.send("{},{},{},{}".format(FORMAT, CHANNELS, RATE, CHUNK).encode('utf-8',errors='ignore'))
+            sock.send("{},{},{},{}".format(FORMAT, CHANNELS, RATE, CHUNK).encode('utf-8', errors='ignore'))
 
             # メインループ
             while True:
                 # 音楽ファイルとマイクからデータ読み込み
-                wav_data = wav_file.readframes(CHUNK)
+                # wav_data = wav_file.readframes(CHUNK)
                 mic_data = mic_stream.read(CHUNK)
 
                 # 音楽ファイルリピート再生処理
-                if wav_data == b'':
-                    wav_file.rewind()
-                    wav_data = wav_file.readframes(CHUNK)
+                #if wav_data == b'':
+                #    wav_file.rewind()
+                #    wav_data = wav_file.readframes(CHUNK)
 
                 # サーバに音データを送信
-                print(self.mix_sound(wav_data, mic_data, CHANNELS, CHUNK, 0.5, 0.5))
-                sock.send(self.mix_sound(wav_data, mic_data, CHANNELS, CHUNK, 0.5, 0.5))
+                # print(self.mix_sound(wav_data, mic_data, CHANNELS, CHUNK, 0.5, 0.5))
+                print(mic_data)
+                #sock.send(self.mix_sound(wav_data, mic_data, CHANNELS, CHUNK, 0.5, 0.5))
+
+                # デコード
+                decoded_data = np.frombuffer(mic_data, np.int16).copy()
+                # データサイズの不足分を0埋め
+                decoded_data.resize(CHANNELS * CHUNK, refcheck=False)
+                # エンコード
+                sock.send(decoded_data.astype(np.int16).tobytes())
 
         # 終了処理
         mic_stream.stop_stream()
