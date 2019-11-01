@@ -47,7 +47,7 @@ class SoundStreamServer(threading.Thread):
                 CHUNK = int(settings_list[3])
 
                 # オーディオ出力ストリーム生成
-                # stream = audio.open(format=FORMAT,channels=CHANNELS,rate=RATE,output=True,frames_per_buffer=CHUNK)
+                stream = audio.open(format=FORMAT,channels=CHANNELS,rate=RATE,output=True,frames_per_buffer=CHUNK)
 
                 # メインループ
                 while True:
@@ -67,7 +67,7 @@ class SoundStreamServer(threading.Thread):
                         break
 
                     # オーディオ出力ストリームにデータ書き込み
-                    # stream.write(data)
+                    stream.write(data)
                     # print(data)
 
                     # output_string = result(data).decode()
