@@ -61,5 +61,6 @@ class MixedSoundStreamClient(threading.Thread):
 
 if __name__ == '__main__':
     mss_client = MixedSoundStreamClient("localhost", 5966)
+    # mss_client = MixedSoundStreamClient("localhost", 12345)
     mss_client.start()
     mss_client.join()

@@ -45,7 +45,7 @@ class MixedSoundStreamServer(threading.Thread):
                         break
 
                     # オーディオ出力ストリームにデータ書き込み
-                    # stream.write(data)
+                    stream.write(data)
                     print(data)
 
         # 終了処理
