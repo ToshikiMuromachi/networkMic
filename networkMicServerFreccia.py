@@ -4,13 +4,17 @@ import socket
 import threading
 
 import numpy as np
+import subprocess
 import sys
+
+import time
+
 
 import pyqtgraph as pg
 from pyqtgraph.Qt import QtCore, QtGui
 
 
-class MixedSoundStreamServer(threading.Thread):
+class SoundStreamServer(threading.Thread):
     def __init__(self, server_host, server_port):
         threading.Thread.__init__(self)
         self.SERVER_HOST = server_host
@@ -18,6 +22,13 @@ class MixedSoundStreamServer(threading.Thread):
 
     def run(self):
         audio = pyaudio.PyAudio()
+
+        # juliusを外部プロセスとして起動
+        path = [
+            './julius/stdin-run-linux.sh'
+        ]
+        path = ''.join(path)
+        # result = subprocess.run(path, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
 
         # サーバーソケット生成
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_sock:
@@ -41,16 +52,15 @@ class MixedSoundStreamServer(threading.Thread):
                 # メインループ
                 while True:
                     # クライアントから音データを受信
-                    print("=====FORMAT:" + str(FORMAT) + "=====") # 8
-                    print("=====CHANNELS:" + str(CHANNELS) + "=====") # 2　スレテオ
-                    print("=====RATE:" + str(RATE) + "=====") # 44100=44.1kHz
-                    print("=====CHUNK:" + str(CHUNK) + "=====") #1024 ファイル全体サイズからRIFFとWAVEのバイト数を引いた数
+                    print("=====FORMAT:" + str(FORMAT) + "=====")  # 8
+                    print("=====CHANNELS:" + str(CHANNELS) + "=====")  # 1　モノラルに変更(julius対応)
+                    print("=====RATE:" + str(RATE) + "=====")  # 44100=44.1kHz
+                    print("=====CHUNK:" + str(CHUNK) + "=====")  # 1024 ファイル全体サイズからRIFFとWAVEのバイト数を引いた数
                     data = client_sock.recv(CHUNK)
 
                     ret = data
-                    ret = np.frombuffer(ret, dtype="int16") / 32768
+                    ret = np.frombuffer(ret, dtype="int16") / 32768  # 32768=2^16で割ってるのは正規化
                     print(ret)
-                    self.curve.setData(ret)
 
                     # 切断処理
                     if not data:
@@ -58,7 +68,12 @@ class MixedSoundStreamServer(threading.Thread):
 
                     # オーディオ出力ストリームにデータ書き込み
                     # stream.write(data)
-                    print(data)
+                    # print(data)
+
+                    # output_string = result(data).decode()
+                    # print(output_string)
+
+
 
         # 終了処理
         # stream.stop_stream()
@@ -68,6 +83,13 @@ class MixedSoundStreamServer(threading.Thread):
 
 
 if __name__ == '__main__':
-    mss_server = MixedSoundStreamServer("localhost", 5966)
+    # plotwin = PlotWindow()
+    # winth = threading.Thread(target=PlotWindow())
+    # winth.start()
+
+    mss_server = SoundStreamServer("localhost", 5966)
     mss_server.start()
     mss_server.join()
+
+    #if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
+    #    QtGui.QApplication.instance().exec_()
