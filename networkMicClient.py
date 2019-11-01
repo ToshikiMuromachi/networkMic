@@ -7,11 +7,10 @@ import threading
 
 
 class MixedSoundStreamClient(threading.Thread):
-    def __init__(self, server_host, server_port, wav_filename):
+    def __init__(self, server_host, server_port):
         threading.Thread.__init__(self)
         self.SERVER_HOST = server_host
         self.SERVER_PORT = int(server_port)
-        self.WAV_FILENAME = wav_filename
 
     def run(self):
         audio = pyaudio.PyAudio()
@@ -21,7 +20,7 @@ class MixedSoundStreamClient(threading.Thread):
 
         # オーディオプロパティ
         FORMAT = pyaudio.paInt16
-        CHANNELS = 2
+        CHANNELS = 1
         RATE = 44100
         CHUNK = 1024
 
@@ -61,6 +60,6 @@ class MixedSoundStreamClient(threading.Thread):
 
 
 if __name__ == '__main__':
-    mss_client = MixedSoundStreamClient("localhost", 5966, "sample.wav")
+    mss_client = MixedSoundStreamClient("localhost", 5966)
     mss_client.start()
     mss_client.join()

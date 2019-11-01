@@ -41,10 +41,10 @@ class MixedSoundStreamServer(threading.Thread):
                 # メインループ
                 while True:
                     # クライアントから音データを受信
-                    print("=====FORMAT:" + str(FORMAT) + "=====") # 8
-                    print("=====CHANNELS:" + str(CHANNELS) + "=====") # 2　スレテオ
-                    print("=====RATE:" + str(RATE) + "=====") # 44100=44.1kHz
-                    print("=====CHUNK:" + str(CHUNK) + "=====") #1024 ファイル全体サイズからRIFFとWAVEのバイト数を引いた数
+                    print("=====FORMAT:" + str(FORMAT) + "=====")  # 8
+                    print("=====CHANNELS:" + str(CHANNELS) + "=====")  # 2　スレテオ
+                    print("=====RATE:" + str(RATE) + "=====")  # 44100=44.1kHz
+                    print("=====CHUNK:" + str(CHUNK) + "=====")  # 1024 ファイル全体サイズからRIFFとWAVEのバイト数を引いた数
                     data = client_sock.recv(CHUNK)
 
                     ret = data
