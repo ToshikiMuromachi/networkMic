@@ -48,15 +48,15 @@ class SoundStreamServer(threading.Thread):
                 # メインループ
                 while True:
                     # クライアントから音データを受信
-                    print("=====FORMAT:" + str(FORMAT) + "=====")  # 8
-                    print("=====CHANNELS:" + str(CHANNELS) + "=====")  # 1　モノラルに変更(julius対応)
-                    print("=====RATE:" + str(RATE) + "=====")  # 44100=44.1kHz
-                    print("=====CHUNK:" + str(CHUNK) + "=====")  # 1024 ファイル全体サイズからRIFFとWAVEのバイト数を引いた数
+                    # print("=====FORMAT:" + str(FORMAT) + "=====")  # 8
+                    # print("=====CHANNELS:" + str(CHANNELS) + "=====")  # 1　モノラルに変更(julius対応)
+                    # print("=====RATE:" + str(RATE) + "=====")  # 44100=44.1kHz
+                    # print("=====CHUNK:" + str(CHUNK) + "=====")  # 1024 ファイル全体サイズからRIFFとWAVEのバイト数を引いた数
                     data = client_sock.recv(CHUNK)
 
                     ret = data
                     ret = np.frombuffer(ret, dtype="int16") / 32768  # 32768=2^16で割ってるのは正規化
-                    print(ret)
+                    # print(ret)
 
                     # 切断処理
                     if not data:
@@ -72,8 +72,8 @@ class SoundStreamServer(threading.Thread):
 
 
         # 終了処理
-        # stream.stop_stream()
-        # stream.close()
+        stream.stop_stream()
+        stream.close()
 
         audio.terminate()
 
@@ -85,9 +85,15 @@ class SoundStreamServer(threading.Thread):
             './julius/run-linux.sh'
         ]
         path = ''.join(path)
-        juliusProcess = subprocess.run(path, stdout=subprocess.PIPE, shell=True)
+        juliusProcess = subprocess.run(path, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print("julius起動完了")
+        #while True:
+            #stdout_data, stderr_data = juliusProcess.communicate()
+            #print(stdout_data)
+            #print(stderr_data)
+            #print("julius")
 
-class Julius:
+class JuliusClass:
     def __init__(self):
         self.host = '127.0.0.1'  # localhost
         self.port = 10500  # julisuT[o[[hÌ|[g
