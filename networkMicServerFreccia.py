@@ -24,11 +24,7 @@ class SoundStreamServer(threading.Thread):
         audio = pyaudio.PyAudio()
 
         # juliusを外部プロセスとして起動
-        path = [
-            './julius/stdin-run-linux.sh'
-        ]
-        path = ''.join(path)
-        # result = subprocess.run(path, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+        juliusThread = threading.Thread(target=self.julius)
 
         # サーバーソケット生成
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_sock:
@@ -81,11 +77,37 @@ class SoundStreamServer(threading.Thread):
 
         audio.terminate()
 
+    def julius(self):
+        """
+            julius起動用
+        """
+        path = [
+            './julius/run-linux.sh'
+        ]
+        path = ''.join(path)
+        juliusProcess = subprocess.run(path, stdout=subprocess.PIPE, shell=True)
+
+class Julius:
+    def __init__(self):
+        self.host = '127.0.0.1'  # localhost
+        self.port = 10500  # julisuT[o[[hÌ|[g
+        juliusThread = threading.Thread(target=self.main)
+        juliusThread.start()
+
+    def main(self):
+        # p = subprocess.Popen(["./run-win-dnn-module.bat"], stdout=subprocess.PIPE, shell=True) # juliusN®XNvgðÀs
+        # pid = str(p.stdout.read().decode('utf-8')) # juliusÌvZXIDðæ¾
+        # juliusProcess = subprocess.run("run-win-dnn-module.bat", shell=True)
+
+        time.sleep(3)  # 3bÔX[v
+        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client.connect((self.host, self.port))  # T[o[[hÅN®µ½juliusÉÚ±S
 
 if __name__ == '__main__':
     # plotwin = PlotWindow()
     # winth = threading.Thread(target=PlotWindow())
     # winth.start()
+    # juliusUtterance = Julius()
 
     mss_server = SoundStreamServer("localhost", 5966)
     mss_server.start()
