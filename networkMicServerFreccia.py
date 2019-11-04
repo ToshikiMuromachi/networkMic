@@ -85,8 +85,12 @@ class SoundStreamServer(threading.Thread):
             './julius/run-linux.sh'
         ]
         path = ''.join(path)
+        print("julius起動起動準備")
         juliusProcess = subprocess.run(path, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         print("julius起動完了")
+        while True:
+            line = juliusProcess.stdout.readline()
+            print(line)
         #while True:
             #stdout_data, stderr_data = juliusProcess.communicate()
             #print(stdout_data)
