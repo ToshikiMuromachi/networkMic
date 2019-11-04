@@ -25,6 +25,7 @@ class SoundStreamServer(threading.Thread):
 
         # juliusを外部プロセスとして起動
         juliusThread = threading.Thread(target=self.julius)
+        juliusThread.start()
 
         # サーバーソケット生成
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_sock:
@@ -86,11 +87,11 @@ class SoundStreamServer(threading.Thread):
         ]
         path = ''.join(path)
         print("julius起動起動準備")
-        juliusProcess = subprocess.run(path, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        juliusProcess = subprocess.run(path, stderr=subprocess.PIPE)
         print("julius起動完了")
-        while True:
-            line = juliusProcess.stdout.readline()
-            print(line)
+        #while True:
+        #    line = juliusProcess.stdout.readline()
+        #    print(line)
         #while True:
             #stdout_data, stderr_data = juliusProcess.communicate()
             #print(stdout_data)
