@@ -1,0 +1,7 @@
+pyaudio
+numpy
+QtCore
+QtGui
+
+flake8
+autopep8
