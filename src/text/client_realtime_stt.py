@@ -4,6 +4,7 @@ import re
 import sys
 import yaml
 # import os
+import socket
 
 from google.cloud import speech
 
@@ -109,7 +110,7 @@ class MicrophoneStream(object):
             yield b"".join(data)
 
 
-def listen_print_loop(responses):
+def listen_print_loop(responses, sock):
     """
     Iterates through server responses and prints them.
     サーバーの応答を繰り返し、それらを出力します。
@@ -163,6 +164,7 @@ def listen_print_loop(responses):
         # 逐次予測の場合は結果が確定していない段階で表示する
         if SEQUENTIAL:
             print(transcript)
+            _ = sock.sendto(transcript.encode('utf-8'), serv_address)
         else:
             if not result.is_final:
                 sys.stdout.write(transcript + overwrite_chars + "\r")
@@ -177,10 +179,14 @@ def listen_print_loop(responses):
         # 認識されたフレーズのいずれかがキーワードの1つである可能性がある場合は、認識を終了します。
         if re.search(r"認識終了", transcript, re.I):
             print("Exiting..")
+            sock.close()
             break
 
 
 def main():
+    # ソケットを作成
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
     # See http://g.co/cloud/speech/docs/languages
     # for a list of supported languages. 言語サポートリストから選択する
     language_code = "ja-JP"  # a BCP-47 language tag
@@ -207,7 +213,7 @@ def main():
 
         # Now, put the transcription responses to use.
         # 次に、応答を使用します。
-        listen_print_loop(responses)
+        listen_print_loop(responses, sock)
 
 
 if __name__ == "__main__":
