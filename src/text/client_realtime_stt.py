@@ -24,9 +24,9 @@ CHUNK = int(RATE / 10)  # 100ms
 
 # UDP通信用の設定
 with open('../../config/server_address.yaml', 'r') as yml:
-    udp_config = yaml.load(yml)
+    udp_config = yaml.safe_load(yml)
 M_SIZE = 1024
-serv_address = (udp_config['host_name'], udp_config['server_address'])
+serv_address = (udp_config['host_name'], udp_config['address'])
 
 
 class MicrophoneStream(object):

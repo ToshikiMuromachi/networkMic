@@ -4,7 +4,7 @@ import socket
 M_SIZE = 1024
 
 host = 'localhost'
-port = 8890
+port = 8000
 
 locaddr = (host, port)
 
