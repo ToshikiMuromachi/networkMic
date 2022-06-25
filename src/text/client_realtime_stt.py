@@ -2,7 +2,8 @@ from __future__ import division
 
 import re
 import sys
-import os
+import yaml
+# import os
 
 from google.cloud import speech
 
@@ -19,6 +20,12 @@ SEQUENTIAL = True
 # 録音パラメータ
 RATE = 16000
 CHUNK = int(RATE / 10)  # 100ms
+
+# UDP通信用の設定
+with open('../../config/server_address.yaml', 'r') as yml:
+    udp_config = yaml.load(yml)
+M_SIZE = 1024
+serv_address = (udp_config['host_name'], udp_config['server_address'])
 
 
 class MicrophoneStream(object):
