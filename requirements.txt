@@ -3,5 +3,8 @@ numpy
 # QtCore
 # QtGui
 
+six~=1.16.0
+google-cloud-speech
+
 flake8
 autopep8
