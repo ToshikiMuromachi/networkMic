@@ -1,7 +1,7 @@
-pyaudio
 numpy
-QtCore
-QtGui
+# pyaudio
+# QtCore
+# QtGui
 
 flake8
 autopep8
