@@ -15,7 +15,7 @@ from six.moves import queue
 # os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/home/toshiki/data/cloud/gcp/tmuromachi-ed1cc8e5a9ae.json'
 
 # True:逐次的に音声認識を行う, False:話者が発話を終了して認識結果が定まったら表示する
-SEQUENTIAL = True
+SEQUENTIAL = False
 
 # Audio recording parameters
 # 録音パラメータ
