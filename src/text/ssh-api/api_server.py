@@ -1,10 +1,16 @@
-from flask import Flask, jsonify
- 
+from flask import Flask, jsonify, request
+
 app = Flask(__name__)
+
+app.config['JSON_AS_ASCII'] = False    # json 文字コード修正
  
-@app.route('/')
-def hello_world():
-    return jsonify({'message': 'Hello world'})
- 
+@app.route('/generate', methods=['GET'])
+def generate():
+    req = request.args
+    text = req.get('text')
+    print(type(text))
+    text = 'Hello world' + text
+    return jsonify({'message': text})
+
 if __name__ == "__main__":
-    app.run(host='127.0.0.1', port=8888, debug=True)
+    app.run(host='localhost', port=8000, debug=True)
