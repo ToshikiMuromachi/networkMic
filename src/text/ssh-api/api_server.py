@@ -15,7 +15,6 @@ app.config['JSON_AS_ASCII'] = False    # json 文字コード修正
 def generate():
     req = request.args
     text = req.get('text')
-    print(type(text))
     text = 'Hello world' + text
     return jsonify({'message': text})
 
