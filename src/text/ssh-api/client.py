@@ -7,8 +7,8 @@ with open('../../../config/server_address.yaml', 'r') as yml:
 locaddr = (api_config['host'], api_config['port'])
 
 text = 'こんにちは'
-url = 'http://' + api_config['host'] + ':' + \
-    api_config['port'] + '/generate?text=' + text
+url = 'http://' + str(api_config['host']) + ':' + \
+    str(api_config['port']) + '/generate?text=' + text
 response = requests.get(url)
 json_data = response.json()
 
