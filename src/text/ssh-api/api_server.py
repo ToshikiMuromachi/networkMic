@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request
 import yaml
 
 # Config
-with open('../../config/server_address.yaml', 'r') as yml:
+with open('../../../config/server_address.yaml', 'r') as yml:
     api_config = yaml.safe_load(yml)
 locaddr = (api_config['host'], api_config['port'])
 
